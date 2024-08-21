@@ -8,8 +8,8 @@ CREATE TABLE "consumers" (
   "birth_place" varchar(255) NOT NULL,
   "birth_date" date NOT NULL,
   "salary" bigint NOT NULL,
-  "ktp_photo" char(36) NOT NULL,
-  "selfie_photo" char(36) NOT NULL
+  "ktp_photo" varchar(255) NOT NULL,
+  "selfie_photo" varchar(255) NOT NULL
 );
 
 CREATE TABLE "limits" (
