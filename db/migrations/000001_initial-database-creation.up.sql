@@ -6,28 +6,28 @@ CREATE TABLE "consumers" (
   "legal_name" varchar(256) NOT NULL,
   "birth_place" varchar(256) NOT NULL,
   "birth_date" date NOT NULL,
-  "salary" money NOT NULL,
+  "salary" bigint NOT NULL,
   "ktp_photo" char(36) NOT NULL,
   "selfie_photo" char(36) NOT NULL
 );
 
 CREATE TABLE "limits" (
   "consumer_id" uuid PRIMARY KEY,
-  "tenor_1" money NOT NULL,
-  "tenor_2" money NOT NULL,
-  "tenor_3" money NOT NULL,
-  "tenor_4" money NOT NULL
+  "tenor_1" bigint NOT NULL,
+  "tenor_2" bigint NOT NULL,
+  "tenor_3" bigint NOT NULL,
+  "tenor_4" bigint NOT NULL
 );
 
 CREATE TABLE "transaction_records" (
   "contract_id" varchar(255) PRIMARY KEY,
   "loan_id" uuid NOT NULL,
-  "otr" money NOT NULL,
-  "admin_fee" money NOT NULL,
-  "installment" money NOT NULL,
-  "interest" money NOT NULL,
+  "otr" bigint NOT NULL,
+  "admin_fee" bigint NOT NULL,
+  "installment" bigint NOT NULL,
+  "interest" bigint NOT NULL,
   "asset_name" varchar(255) NOT NULL,
-  "total" money NOT NULL,
+  "total" bigint NOT NULL,
   "status" smallint NOT NULL DEFAULT 0
 );
 
@@ -40,11 +40,11 @@ CREATE TABLE "installment_records" (
 CREATE TABLE "loans" (
   "id" uuid PRIMARY KEY DEFAULT (gen_random_uuid()),
   "consumer_id" uuid NOT NULL,
-  "amount" money NOT NULL,
+  "amount" bigint NOT NULL,
   "tenor" smallint NOT NULL,
   "installment_length" smallint NOT NULL,
-  "consumer_limit" money NOT NULL,
-  "consumer_salary" money NOT NULL,
+  "consumer_limit" bigint NOT NULL,
+  "consumer_salary" bigint NOT NULL,
   "loaned_at" timestamp NOT NULL,
   "status" smallint NOT NULL DEFAULT 0
 );
