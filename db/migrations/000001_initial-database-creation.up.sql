@@ -2,9 +2,10 @@ BEGIN;
 CREATE TABLE "consumers" (
   "id" uuid PRIMARY KEY DEFAULT (gen_random_uuid()),
   "NIK" varchar(16) UNIQUE NOT NULL,
-  "full_name" varchar(256) NOT NULL,
-  "legal_name" varchar(256) NOT NULL,
-  "birth_place" varchar(256) NOT NULL,
+  "email" varchar(255) UNIQUE NOT NULL,
+  "full_name" varchar(255) NOT NULL,
+  "legal_name" varchar(255) NOT NULL,
+  "birth_place" varchar(255) NOT NULL,
   "birth_date" date NOT NULL,
   "salary" bigint NOT NULL,
   "ktp_photo" char(36) NOT NULL,
