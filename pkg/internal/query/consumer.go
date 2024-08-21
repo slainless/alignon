@@ -22,3 +22,12 @@ func GetConsumerByEmail(ctx context.Context, db *sql.DB, email string) (*model.C
 
 	return &consumer, err
 }
+
+func InsertFreshCustomer(ctx context.Context, db *sql.DB, email string) error {
+	stmt := table.
+		Consumers.INSERT(table.Consumers.MutableColumns).
+		MODELS(&model.Consumers{Email: email})
+
+	_, err := stmt.ExecContext(ctx, db)
+	return err
+}
