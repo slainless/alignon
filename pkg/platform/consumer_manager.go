@@ -104,10 +104,10 @@ func (m *ConsumerManager) Register(ctx context.Context, payload *ConsumerRegiste
 
 	wg.Wait()
 	if ktpErr != nil || selfieErr != nil {
+		err := errors.Join(ktpErr, selfieErr, ErrPhotosUploadFailed)
 		m.errorTracker.Report(ctx, tx.Rollback())
-		m.errorTracker.Report(ctx, ktpErr)
-		m.errorTracker.Report(ctx, selfieErr)
-		return nil, errors.Join(ktpErr, selfieErr, ErrPhotosUploadFailed)
+		m.errorTracker.Report(ctx, err)
+		return nil, err
 	}
 
 	updatePhotosStmt := table.Consumers.UPDATE().
