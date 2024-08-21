@@ -10,10 +10,6 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
-type RegisterPayload struct {
-	platform.Consumer
-}
-
 func (s *Service) register() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		email, err := s.authManager.Validate(c)
@@ -24,7 +20,7 @@ func (s *Service) register() fiber.Handler {
 			return c.Status(500).SendString("Fail to validate token")
 		}
 
-		var payload RegisterPayload
+		var payload platform.ConsumerRegisterInput
 		err = c.BodyParser(&payload)
 		if err != nil {
 			return c.Status(400).SendString(err.Error())
@@ -56,10 +52,10 @@ func (s *Service) register() fiber.Handler {
 			return c.Status(500).SendString(err.Error())
 		}
 
-		err = s.consumerManager.Register(c.Context(), &payload.Consumer, ktp, selfie)
+		consumer, err := s.consumerManager.Register(c.Context(), &payload, ktp, selfie)
 		if err != nil {
 			return c.Status(500).SendString("Fail to register user")
 		}
-		return c.SendStatus(201)
+		return c.Status(201).JSON(consumer)
 	}
 }

@@ -54,14 +54,15 @@ func (m *ConsumerManager) GetByEmail(ctx context.Context, email string) (*Consum
 		return nil, err
 	}
 
+	consumer.P_BirthDate = consumer.BirthDate.Format(time.DateOnly)
 	return &consumer, nil
 }
 
-func (m *ConsumerManager) Register(ctx context.Context, payload *Consumer, ktp, selfie *multipart.FileHeader) error {
+func (m *ConsumerManager) Register(ctx context.Context, payload *ConsumerRegisterInput, ktp, selfie *multipart.FileHeader) (*Consumer, error) {
 	tx, err := m.db.BeginTx(ctx, nil)
 	if err != nil {
 		m.errorTracker.Report(ctx, err)
-		return err
+		return nil, err
 	}
 
 	insertCustomerStmt := table.Consumers.
@@ -74,7 +75,7 @@ func (m *ConsumerManager) Register(ctx context.Context, payload *Consumer, ktp, 
 	if err != nil {
 		m.errorTracker.Report(ctx, tx.Rollback())
 		m.errorTracker.Report(ctx, err)
-		return err
+		return nil, err
 	}
 
 	ktpFileId := id.id.String() + "_ktp"
@@ -106,7 +107,7 @@ func (m *ConsumerManager) Register(ctx context.Context, payload *Consumer, ktp, 
 		m.errorTracker.Report(ctx, tx.Rollback())
 		m.errorTracker.Report(ctx, ktpErr)
 		m.errorTracker.Report(ctx, selfieErr)
-		return errors.Join(ktpErr, selfieErr, ErrPhotosUploadFailed)
+		return nil, errors.Join(ktpErr, selfieErr, ErrPhotosUploadFailed)
 	}
 
 	updatePhotosStmt := table.Consumers.UPDATE().
@@ -114,9 +115,11 @@ func (m *ConsumerManager) Register(ctx context.Context, payload *Consumer, ktp, 
 			table.Consumers.KtpPhoto.SET(String(ktpFileId)),
 			table.Consumers.SelfiePhoto.SET(String(selfieFileId)),
 		).
-		WHERE(table.Consumers.ID.EQ(UUID(id.id)))
+		WHERE(table.Consumers.ID.EQ(UUID(id.id))).
+		RETURNING(table.Consumers.AllColumns)
 
-	_, err = updatePhotosStmt.ExecContext(ctx, tx)
+	var consumer Consumer
+	err = updatePhotosStmt.QueryContext(ctx, tx, &consumer)
 	if err != nil {
 		wg := sync.WaitGroup{}
 		wg.Add(2)
@@ -135,16 +138,18 @@ func (m *ConsumerManager) Register(ctx context.Context, payload *Consumer, ktp, 
 
 		m.errorTracker.Report(ctx, tx.Rollback())
 		m.errorTracker.Report(ctx, err)
-		return err
+		return nil, err
 	}
 
 	err = tx.Commit()
 	if err != nil {
 		m.errorTracker.Report(ctx, tx.Rollback())
 		m.errorTracker.Report(ctx, err)
-		return err
+		return nil, err
 	}
-	return nil
+
+	consumer.P_BirthDate = consumer.BirthDate.Format(time.DateOnly)
+	return &consumer, nil
 }
 
 func (m *ConsumerManager) GetLimit(ctx context.Context, id uuid.UUID) (*Limit, error) {
