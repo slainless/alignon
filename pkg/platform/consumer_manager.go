@@ -43,7 +43,8 @@ func NewConsumerManager(db *sql.DB, auth *AuthManager, file FileService, tracker
 }
 
 func (m *ConsumerManager) GetByEmail(ctx context.Context, email string) (*Consumer, error) {
-	consumer, err := query.GetConsumerByEmail(ctx, m.db, email)
+	var consumer Consumer
+	err := query.GetConsumerByEmail(ctx, m.db, email, &consumer)
 	if err != nil {
 		if err == qrm.ErrNoRows {
 			return nil, ErrConsumerNotFound
@@ -53,9 +54,7 @@ func (m *ConsumerManager) GetByEmail(ctx context.Context, email string) (*Consum
 		return nil, err
 	}
 
-	return &Consumer{
-		Consumers: *consumer,
-	}, nil
+	return &consumer, nil
 }
 
 func (m *ConsumerManager) Register(ctx context.Context, payload *Consumer, ktp, selfie *multipart.FileHeader) error {
@@ -149,7 +148,8 @@ func (m *ConsumerManager) Register(ctx context.Context, payload *Consumer, ktp, 
 }
 
 func (m *ConsumerManager) GetLimit(ctx context.Context, id uuid.UUID) (*Limit, error) {
-	limit, err := query.GetConsumerLimit(ctx, m.db, id)
+	var limit Limit
+	err := query.GetConsumerLimit(ctx, m.db, id, &limit)
 	if err != nil {
 		if err == qrm.ErrNoRows {
 			return nil, ErrNoLimitSetYet
@@ -159,7 +159,5 @@ func (m *ConsumerManager) GetLimit(ctx context.Context, id uuid.UUID) (*Limit, e
 		return nil, err
 	}
 
-	return &Limit{
-		Limits: *limit,
-	}, nil
+	return &limit, nil
 }
