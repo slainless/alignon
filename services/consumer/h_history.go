@@ -1,9 +1,17 @@
 package consumer
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"github.com/gofiber/fiber/v2"
+)
 
 func (s *Service) history() fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		return c.SendString("register")
+		consumer := s.MustGetConsumer(c)
+		loans, err := s.loanManager.GetLoans(c.Context(), consumer.ID)
+		if err != nil {
+			return c.Status(500).SendString("Fail to get loans")
+		}
+
+		return c.JSON(loans)
 	}
 }

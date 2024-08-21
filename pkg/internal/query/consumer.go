@@ -48,7 +48,7 @@ func GetCurrentLoanOfConsumer(ctx context.Context, db *sql.DB, id uuid.UUID, to 
 		).
 		WHERE(
 			table.Loans.ConsumerID.EQ(UUID(id)).
-				AND(table.Loans.Status.EQ(Int8(1))),
+				AND(table.Loans.Status.EQ(Int8(0))),
 		).
 		ORDER_BY(table.Loans.LoanedAt.DESC()).
 		LIMIT(1)
@@ -85,6 +85,30 @@ func GetTransactionOfCurrentLoan(ctx context.Context, db *sql.DB, consumerID uui
 		WHERE(
 			table.TransactionRecords.ContractID.EQ(String(transactionID)),
 		)
+
+	err := stmt.QueryContext(ctx, db, to)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func GetLoansOfConsumer(ctx context.Context, db *sql.DB, id uuid.UUID, to any) error {
+	stmt := SELECT(
+		table.Loans.AllColumns,
+		table.TransactionRecords.AllColumns,
+		table.InstallmentRecords.AllColumns,
+	).
+		FROM(
+			table.Loans.
+				INNER_JOIN(table.TransactionRecords, table.TransactionRecords.LoanID.EQ(table.Loans.ID)).
+				INNER_JOIN(table.InstallmentRecords, table.InstallmentRecords.ContractID.EQ(table.TransactionRecords.ContractID)),
+		).
+		WHERE(
+			table.Loans.ConsumerID.EQ(UUID(id)),
+		).
+		ORDER_BY(table.Loans.LoanedAt.DESC())
 
 	err := stmt.QueryContext(ctx, db, to)
 	if err != nil {

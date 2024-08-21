@@ -50,3 +50,14 @@ func (m *LoanManager) GetTransactionOfCurrentLoan(ctx context.Context, consumerI
 
 	return &transaction, nil
 }
+
+func (m *LoanManager) GetLoans(ctx context.Context, consumerID uuid.UUID) ([]Loan, error) {
+	loans := make([]Loan, 0)
+	err := query.GetLoansOfConsumer(ctx, m.db, consumerID, loans)
+	if err != nil {
+		m.errorTracker.Report(ctx, err)
+		return nil, err
+	}
+
+	return loans, nil
+}
