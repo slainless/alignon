@@ -9,9 +9,6 @@ func (s *Service) Mount(app fiber.Router) {
 	protected := app.Group("/")
 	protected.Use(s.auth())
 
-	// patch user data
-	protected.Patch("/profile", s.profile())
-
 	protected.Get("/limit", s.limit())
 
 	// get current loan detail
