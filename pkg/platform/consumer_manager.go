@@ -20,6 +20,7 @@ var (
 	ErrConsumerNotFound          = errors.New("consumer not found")
 	ErrConsumerAlreadyRegistered = errors.New("consumer already registered")
 	ErrPhotosUploadFailed        = errors.New("photos upload failed")
+	ErrNoLimitSetYet             = errors.New("no limit set yet")
 )
 
 type ConsumerManager struct {
@@ -115,6 +116,7 @@ func (m *ConsumerManager) Register(ctx context.Context, payload *Consumer, ktp, 
 			table.Consumers.SelfiePhoto.SET(String(selfieFileId)),
 		).
 		WHERE(table.Consumers.ID.EQ(UUID(id.id)))
+
 	_, err = updatePhotosStmt.ExecContext(ctx, tx)
 	if err != nil {
 		wg := sync.WaitGroup{}
@@ -144,4 +146,20 @@ func (m *ConsumerManager) Register(ctx context.Context, payload *Consumer, ktp, 
 		return err
 	}
 	return nil
+}
+
+func (m *ConsumerManager) GetLimit(ctx context.Context, id uuid.UUID) (*Limit, error) {
+	limit, err := query.GetConsumerLimit(ctx, m.db, id)
+	if err != nil {
+		if err == qrm.ErrNoRows {
+			return nil, ErrNoLimitSetYet
+		}
+
+		m.errorTracker.Report(ctx, err)
+		return nil, err
+	}
+
+	return &Limit{
+		Limits: *limit,
+	}, nil
 }

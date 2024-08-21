@@ -5,6 +5,7 @@ import (
 	"database/sql"
 
 	. "github.com/go-jet/jet/v2/postgres"
+	"github.com/google/uuid"
 	"github.com/slainless/my-alignon/pkg/internal/artifact/database/my_alignon/public/model"
 	"github.com/slainless/my-alignon/pkg/internal/artifact/database/my_alignon/public/table"
 )
@@ -23,11 +24,25 @@ func GetConsumerByEmail(ctx context.Context, db *sql.DB, email string) (*model.C
 	return &consumer, err
 }
 
-func InsertFreshCustomer(ctx context.Context, db *sql.DB, email string) error {
-	stmt := table.
-		Consumers.INSERT(table.Consumers.MutableColumns).
-		MODELS(&model.Consumers{Email: email})
+func GetConsumerLimit(ctx context.Context, db *sql.DB, id uuid.UUID) (*model.Limits, error) {
+	stmt := SELECT(table.Limits.AllColumns).
+		FROM(table.Limits).
+		WHERE(table.Limits.ConsumerID.EQ(UUID(id)))
 
-	_, err := stmt.ExecContext(ctx, db)
-	return err
+	var limit model.Limits
+	err := stmt.QueryContext(ctx, db, &limit)
+	if err != nil {
+		return nil, err
+	}
+
+	return &limit, err
 }
+
+// func InsertFreshCustomer(ctx context.Context, db *sql.DB, email string) error {
+// 	stmt := table.
+// 		Consumers.INSERT(table.Consumers.MutableColumns).
+// 		MODELS(&model.Consumers{Email: email})
+
+// 	_, err := stmt.ExecContext(ctx, db)
+// 	return err
+// }
