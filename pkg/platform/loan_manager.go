@@ -12,6 +12,7 @@ import (
 
 var (
 	ErrConsumerNotBorrowingAnyNow = errors.New("consumer not borrowing any loan right now")
+	ErrTransactionRecordNotFound  = errors.New("transaction record not found")
 )
 
 type LoanManager struct {
@@ -20,7 +21,7 @@ type LoanManager struct {
 	errorTracker ErrorTracker
 }
 
-func (m *LoanManager) GetCurrentLoanOfConsumer(ctx context.Context, consumerID uuid.UUID) (*Loan, error) {
+func (m *LoanManager) GetCurrentLoan(ctx context.Context, consumerID uuid.UUID) (*Loan, error) {
 	var loan Loan
 	err := query.GetCurrentLoanOfConsumer(ctx, m.db, consumerID, &loan)
 	if err != nil {
@@ -33,4 +34,19 @@ func (m *LoanManager) GetCurrentLoanOfConsumer(ctx context.Context, consumerID u
 	}
 
 	return &loan, nil
+}
+
+func (m *LoanManager) GetTransactionOfCurrentLoan(ctx context.Context, consumerID uuid.UUID, transactionID string) (*TransactionRecord, error) {
+	var transaction TransactionRecord
+	err := query.GetTransactionOfCurrentLoan(ctx, m.db, consumerID, transactionID, &transaction)
+	if err != nil {
+		if err == qrm.ErrNoRows {
+			return nil, ErrTransactionRecordNotFound
+		}
+
+		m.errorTracker.Report(ctx, err)
+		return nil, err
+	}
+
+	return &transaction, nil
 }

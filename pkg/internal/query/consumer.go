@@ -46,7 +46,12 @@ func GetCurrentLoanOfConsumer(ctx context.Context, db *sql.DB, id uuid.UUID, to 
 				INNER_JOIN(table.TransactionRecords, table.TransactionRecords.LoanID.EQ(table.Loans.ID)).
 				INNER_JOIN(table.InstallmentRecords, table.InstallmentRecords.ContractID.EQ(table.TransactionRecords.ContractID)),
 		).
-		WHERE(table.Loans.ConsumerID.EQ(UUID(id)))
+		WHERE(
+			table.Loans.ConsumerID.EQ(UUID(id)).
+				AND(table.Loans.Status.EQ(Int8(1))),
+		).
+		ORDER_BY(table.Loans.LoanedAt.DESC()).
+		LIMIT(1)
 
 	err := stmt.QueryContext(ctx, db, to)
 	if err != nil {
@@ -56,11 +61,35 @@ func GetCurrentLoanOfConsumer(ctx context.Context, db *sql.DB, id uuid.UUID, to 
 	return nil
 }
 
-// func InsertFreshCustomer(ctx context.Context, db *sql.DB, email string) error {
-// 	stmt := table.
-// 		Consumers.INSERT(table.Consumers.MutableColumns).
-// 		MODELS(&model.Consumers{Email: email})
+func GetTransactionOfCurrentLoan(ctx context.Context, db *sql.DB, consumerID uuid.UUID, transactionID string, to any) error {
+	stmt := SELECT(
+		table.TransactionRecords.AllColumns,
+		table.InstallmentRecords.AllColumns,
+	).
+		FROM(
+			table.TransactionRecords.
+				INNER_JOIN(table.InstallmentRecords, table.InstallmentRecords.ContractID.EQ(table.TransactionRecords.ContractID)).
+				INNER_JOIN(
+					SELECT(table.Loans.ID).
+						FROM(table.Loans).
+						WHERE(
+							table.Loans.ConsumerID.EQ(UUID(consumerID)).
+								AND(table.Loans.Status.EQ(Int8(0))),
+						).
+						ORDER_BY(table.Loans.LoanedAt.DESC()).
+						LIMIT(1).
+						AsTable("loans"),
+					table.TransactionRecords.LoanID.EQ(table.Loans.ID),
+				),
+		).
+		WHERE(
+			table.TransactionRecords.ContractID.EQ(String(transactionID)),
+		)
 
-// 	_, err := stmt.ExecContext(ctx, db)
-// 	return err
-// }
+	err := stmt.QueryContext(ctx, db, to)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

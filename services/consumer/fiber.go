@@ -14,7 +14,7 @@ func (s *Service) Mount(app fiber.Router) {
 	// get current loan detail
 	protected.Get("/loan", s.loan())
 	// get current transaction detail
-	protected.Get("/loan/transaction/:id", s.transaction())
+	// protected.Get("/loan/transaction/:id", s.transaction())
 
 	// apply for loan
 	protected.Post("/apply", s.apply())

@@ -8,7 +8,7 @@ import (
 func (s *Service) loan() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		consumer := s.MustGetConsumer(c)
-		loan, err := s.loanManager.GetCurrentLoanOfConsumer(c.Context(), consumer.ID)
+		loan, err := s.loanManager.GetCurrentLoan(c.Context(), consumer.ID)
 		if err != nil {
 			if err == platform.ErrConsumerNotBorrowingAnyNow {
 				return c.Status(404).SendString(err.Error())
