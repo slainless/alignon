@@ -2,3 +2,4 @@
 !.data/README
 bin/*
 !bin/README
+.env

@@ -1,0 +1,17 @@
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: my_alignon
+    ports:
+      - 7776:5432
+    volumes:
+      - ./.data/db:/var/lib/postgresql/data
+  dbeaver:
+    image: dbeaver/cloudbeaver
+    volumes:
+      - ./.data/dbeaver:/opt/cloudbeaver/workspace
+    ports:
+      - 7777:8978
