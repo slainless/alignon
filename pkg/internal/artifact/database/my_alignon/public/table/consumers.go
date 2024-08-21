@@ -19,6 +19,7 @@ type consumersTable struct {
 	// Columns
 	ID          postgres.ColumnString
 	Nik         postgres.ColumnString
+	Email       postgres.ColumnString
 	FullName    postgres.ColumnString
 	LegalName   postgres.ColumnString
 	BirthPlace  postgres.ColumnString
@@ -68,6 +69,7 @@ func newConsumersTableImpl(schemaName, tableName, alias string) consumersTable {
 	var (
 		IDColumn          = postgres.StringColumn("id")
 		NikColumn         = postgres.StringColumn("NIK")
+		EmailColumn       = postgres.StringColumn("email")
 		FullNameColumn    = postgres.StringColumn("full_name")
 		LegalNameColumn   = postgres.StringColumn("legal_name")
 		BirthPlaceColumn  = postgres.StringColumn("birth_place")
@@ -75,8 +77,8 @@ func newConsumersTableImpl(schemaName, tableName, alias string) consumersTable {
 		SalaryColumn      = postgres.IntegerColumn("salary")
 		KtpPhotoColumn    = postgres.StringColumn("ktp_photo")
 		SelfiePhotoColumn = postgres.StringColumn("selfie_photo")
-		allColumns        = postgres.ColumnList{IDColumn, NikColumn, FullNameColumn, LegalNameColumn, BirthPlaceColumn, BirthDateColumn, SalaryColumn, KtpPhotoColumn, SelfiePhotoColumn}
-		mutableColumns    = postgres.ColumnList{NikColumn, FullNameColumn, LegalNameColumn, BirthPlaceColumn, BirthDateColumn, SalaryColumn, KtpPhotoColumn, SelfiePhotoColumn}
+		allColumns        = postgres.ColumnList{IDColumn, NikColumn, EmailColumn, FullNameColumn, LegalNameColumn, BirthPlaceColumn, BirthDateColumn, SalaryColumn, KtpPhotoColumn, SelfiePhotoColumn}
+		mutableColumns    = postgres.ColumnList{NikColumn, EmailColumn, FullNameColumn, LegalNameColumn, BirthPlaceColumn, BirthDateColumn, SalaryColumn, KtpPhotoColumn, SelfiePhotoColumn}
 	)
 
 	return consumersTable{
@@ -85,6 +87,7 @@ func newConsumersTableImpl(schemaName, tableName, alias string) consumersTable {
 		//Columns
 		ID:          IDColumn,
 		Nik:         NikColumn,
+		Email:       EmailColumn,
 		FullName:    FullNameColumn,
 		LegalName:   LegalNameColumn,
 		BirthPlace:  BirthPlaceColumn,

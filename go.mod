@@ -5,6 +5,7 @@ go 1.21.0
 require (
 	github.com/go-jet/jet/v2 v2.11.1
 	github.com/gofiber/fiber/v2 v2.52.5
+	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/google/uuid v1.6.0
 )
 

@@ -15,6 +15,7 @@ import (
 type Consumers struct {
 	ID          uuid.UUID `sql:"primary_key"`
 	Nik         string
+	Email       string
 	FullName    string
 	LegalName   string
 	BirthPlace  string

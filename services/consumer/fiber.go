@@ -6,19 +6,22 @@ func (s *Service) Mount(app fiber.Router) {
 	// register to system, must be authenticated by 3rd party auth
 	app.Post("/register", s.register())
 
-	// patch user data
-	app.Patch("/profile", s.profile())
+	protected := app.Group("/")
+	protected.Use(s.auth())
 
-	app.Get("/limit", s.limit())
+	// patch user data
+	protected.Patch("/profile", s.profile())
+
+	protected.Get("/limit", s.limit())
 
 	// get current loan detail
-	app.Get("/loan", s.loan())
+	protected.Get("/loan", s.loan())
 	// get current transaction detail
-	app.Get("/loan/transaction/:id", s.transaction())
+	protected.Get("/loan/transaction/:id", s.transaction())
 
 	// apply for loan
-	app.Post("/apply", s.apply())
+	protected.Post("/apply", s.apply())
 
 	// get loan history
-	app.Get("/history", s.history())
+	protected.Get("/history", s.history())
 }
