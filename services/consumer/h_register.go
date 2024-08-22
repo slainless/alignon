@@ -26,15 +26,15 @@ func (s *Service) register() fiber.Handler {
 			return c.Status(400).SendString(err.Error())
 		}
 
-		payload.Email = email
+		if err := valid.Struct(&payload); err != nil {
+			return err
+		}
+
 		payload.BirthDate, err = time.Parse(time.DateOnly, payload.P_BirthDate)
 		if err != nil {
 			return c.Status(400).SendString(err.Error())
 		}
-
-		if err := valid.Struct(&payload); err != nil {
-			return err
-		}
+		payload.Email = email
 
 		ktp, err := c.FormFile("ktp_photo")
 		if err != nil {
