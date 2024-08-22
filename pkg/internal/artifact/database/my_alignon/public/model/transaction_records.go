@@ -21,4 +21,5 @@ type TransactionRecords struct {
 	AssetName   string
 	Total       int64
 	Status      int16
+	CatalogID   uuid.UUID
 }

@@ -14,6 +14,7 @@ func UseSchema(schema string) {
 	InstallmentRecords = InstallmentRecords.FromSchema(schema)
 	Limits = Limits.FromSchema(schema)
 	Loans = Loans.FromSchema(schema)
+	PurchaseCatalog = PurchaseCatalog.FromSchema(schema)
 	SchemaMigrations = SchemaMigrations.FromSchema(schema)
 	TransactionRecords = TransactionRecords.FromSchema(schema)
 }

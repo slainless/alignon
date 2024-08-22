@@ -26,6 +26,7 @@ type transactionRecordsTable struct {
 	AssetName   postgres.ColumnString
 	Total       postgres.ColumnInteger
 	Status      postgres.ColumnInteger
+	CatalogID   postgres.ColumnString
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -75,8 +76,9 @@ func newTransactionRecordsTableImpl(schemaName, tableName, alias string) transac
 		AssetNameColumn   = postgres.StringColumn("asset_name")
 		TotalColumn       = postgres.IntegerColumn("total")
 		StatusColumn      = postgres.IntegerColumn("status")
-		allColumns        = postgres.ColumnList{ContractIDColumn, LoanIDColumn, OtrColumn, AdminFeeColumn, InstallmentColumn, InterestColumn, AssetNameColumn, TotalColumn, StatusColumn}
-		mutableColumns    = postgres.ColumnList{LoanIDColumn, OtrColumn, AdminFeeColumn, InstallmentColumn, InterestColumn, AssetNameColumn, TotalColumn, StatusColumn}
+		CatalogIDColumn   = postgres.StringColumn("catalog_id")
+		allColumns        = postgres.ColumnList{ContractIDColumn, LoanIDColumn, OtrColumn, AdminFeeColumn, InstallmentColumn, InterestColumn, AssetNameColumn, TotalColumn, StatusColumn, CatalogIDColumn}
+		mutableColumns    = postgres.ColumnList{LoanIDColumn, OtrColumn, AdminFeeColumn, InstallmentColumn, InterestColumn, AssetNameColumn, TotalColumn, StatusColumn, CatalogIDColumn}
 	)
 
 	return transactionRecordsTable{
@@ -92,6 +94,7 @@ func newTransactionRecordsTableImpl(schemaName, tableName, alias string) transac
 		AssetName:   AssetNameColumn,
 		Total:       TotalColumn,
 		Status:      StatusColumn,
+		CatalogID:   CatalogIDColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,
