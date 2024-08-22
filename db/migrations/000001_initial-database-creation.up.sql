@@ -22,7 +22,6 @@ CREATE TABLE "limits" (
 
 CREATE TABLE "transaction_records" (
   "contract_id" varchar(255) PRIMARY KEY,
-  "catalogue_id" varchar(255) NOT NULL,
   "loan_id" uuid NOT NULL,
   "otr" bigint NOT NULL,
   "admin_fee" bigint NOT NULL,
