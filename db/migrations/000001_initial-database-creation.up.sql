@@ -21,20 +21,21 @@ CREATE TABLE "limits" (
 );
 
 CREATE TABLE "transaction_records" (
-  "contract_id" varchar(255) PRIMARY KEY,
+  "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  "contract_id" varchar(255),
   "loan_id" uuid NOT NULL,
-  "otr" bigint NOT NULL,
-  "admin_fee" bigint NOT NULL,
-  "installment" bigint NOT NULL,
-  "interest" bigint NOT NULL,
+  "otr" bigint,
+  "admin_fee" bigint,
+  "installment" bigint,
+  "interest" bigint,
   "asset_name" varchar(255) NOT NULL,
-  "total" bigint NOT NULL,
+  "amount" bigint NOT NULL,
   "status" smallint NOT NULL DEFAULT 0
 );
 
 CREATE TABLE "installment_records" (
   "installment_id" uuid PRIMARY KEY DEFAULT (gen_random_uuid()),
-  "contract_id" varchar(255) NOT NULL,
+  "transaction_id" uuid NOT NULL,
   "paid_at" timestamp NOT NULL
 );
 
@@ -52,6 +53,6 @@ CREATE TABLE "loans" (
 
 ALTER TABLE "limits" ADD FOREIGN KEY ("consumer_id") REFERENCES "consumers" ("id");
 ALTER TABLE "transaction_records" ADD FOREIGN KEY ("loan_id") REFERENCES "loans" ("id");
-ALTER TABLE "installment_records" ADD FOREIGN KEY ("contract_id") REFERENCES "transaction_records" ("contract_id");
+ALTER TABLE "installment_records" ADD FOREIGN KEY ("transaction_id") REFERENCES "transaction_records" ("id");
 ALTER TABLE "loans" ADD FOREIGN KEY ("consumer_id") REFERENCES "consumers" ("id");
 COMMIT;

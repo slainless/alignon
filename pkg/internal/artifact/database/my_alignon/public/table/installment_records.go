@@ -18,7 +18,7 @@ type installmentRecordsTable struct {
 
 	// Columns
 	InstallmentID postgres.ColumnString
-	ContractID    postgres.ColumnString
+	TransactionID postgres.ColumnString
 	PaidAt        postgres.ColumnTimestamp
 
 	AllColumns     postgres.ColumnList
@@ -61,10 +61,10 @@ func newInstallmentRecordsTable(schemaName, tableName, alias string) *Installmen
 func newInstallmentRecordsTableImpl(schemaName, tableName, alias string) installmentRecordsTable {
 	var (
 		InstallmentIDColumn = postgres.StringColumn("installment_id")
-		ContractIDColumn    = postgres.StringColumn("contract_id")
+		TransactionIDColumn = postgres.StringColumn("transaction_id")
 		PaidAtColumn        = postgres.TimestampColumn("paid_at")
-		allColumns          = postgres.ColumnList{InstallmentIDColumn, ContractIDColumn, PaidAtColumn}
-		mutableColumns      = postgres.ColumnList{ContractIDColumn, PaidAtColumn}
+		allColumns          = postgres.ColumnList{InstallmentIDColumn, TransactionIDColumn, PaidAtColumn}
+		mutableColumns      = postgres.ColumnList{TransactionIDColumn, PaidAtColumn}
 	)
 
 	return installmentRecordsTable{
@@ -72,7 +72,7 @@ func newInstallmentRecordsTableImpl(schemaName, tableName, alias string) install
 
 		//Columns
 		InstallmentID: InstallmentIDColumn,
-		ContractID:    ContractIDColumn,
+		TransactionID: TransactionIDColumn,
 		PaidAt:        PaidAtColumn,
 
 		AllColumns:     allColumns,

@@ -20,6 +20,6 @@ type Loans struct {
 	InstallmentLength int16
 	ConsumerLimit     int64
 	ConsumerSalary    int64
-	LoanedAt          time.Time
+	LoanedAt          *time.Time
 	Status            int16
 }

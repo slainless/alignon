@@ -17,6 +17,7 @@ type transactionRecordsTable struct {
 	postgres.Table
 
 	// Columns
+	ID          postgres.ColumnString
 	ContractID  postgres.ColumnString
 	LoanID      postgres.ColumnString
 	Otr         postgres.ColumnInteger
@@ -24,7 +25,7 @@ type transactionRecordsTable struct {
 	Installment postgres.ColumnInteger
 	Interest    postgres.ColumnInteger
 	AssetName   postgres.ColumnString
-	Total       postgres.ColumnInteger
+	Amount      postgres.ColumnInteger
 	Status      postgres.ColumnInteger
 	CatalogID   postgres.ColumnString
 
@@ -67,6 +68,7 @@ func newTransactionRecordsTable(schemaName, tableName, alias string) *Transactio
 
 func newTransactionRecordsTableImpl(schemaName, tableName, alias string) transactionRecordsTable {
 	var (
+		IDColumn          = postgres.StringColumn("id")
 		ContractIDColumn  = postgres.StringColumn("contract_id")
 		LoanIDColumn      = postgres.StringColumn("loan_id")
 		OtrColumn         = postgres.IntegerColumn("otr")
@@ -74,17 +76,18 @@ func newTransactionRecordsTableImpl(schemaName, tableName, alias string) transac
 		InstallmentColumn = postgres.IntegerColumn("installment")
 		InterestColumn    = postgres.IntegerColumn("interest")
 		AssetNameColumn   = postgres.StringColumn("asset_name")
-		TotalColumn       = postgres.IntegerColumn("total")
+		AmountColumn      = postgres.IntegerColumn("amount")
 		StatusColumn      = postgres.IntegerColumn("status")
 		CatalogIDColumn   = postgres.StringColumn("catalog_id")
-		allColumns        = postgres.ColumnList{ContractIDColumn, LoanIDColumn, OtrColumn, AdminFeeColumn, InstallmentColumn, InterestColumn, AssetNameColumn, TotalColumn, StatusColumn, CatalogIDColumn}
-		mutableColumns    = postgres.ColumnList{LoanIDColumn, OtrColumn, AdminFeeColumn, InstallmentColumn, InterestColumn, AssetNameColumn, TotalColumn, StatusColumn, CatalogIDColumn}
+		allColumns        = postgres.ColumnList{IDColumn, ContractIDColumn, LoanIDColumn, OtrColumn, AdminFeeColumn, InstallmentColumn, InterestColumn, AssetNameColumn, AmountColumn, StatusColumn, CatalogIDColumn}
+		mutableColumns    = postgres.ColumnList{ContractIDColumn, LoanIDColumn, OtrColumn, AdminFeeColumn, InstallmentColumn, InterestColumn, AssetNameColumn, AmountColumn, StatusColumn, CatalogIDColumn}
 	)
 
 	return transactionRecordsTable{
 		Table: postgres.NewTable(schemaName, tableName, alias, allColumns...),
 
 		//Columns
+		ID:          IDColumn,
 		ContractID:  ContractIDColumn,
 		LoanID:      LoanIDColumn,
 		Otr:         OtrColumn,
@@ -92,7 +95,7 @@ func newTransactionRecordsTableImpl(schemaName, tableName, alias string) transac
 		Installment: InstallmentColumn,
 		Interest:    InterestColumn,
 		AssetName:   AssetNameColumn,
-		Total:       TotalColumn,
+		Amount:      AmountColumn,
 		Status:      StatusColumn,
 		CatalogID:   CatalogIDColumn,
 

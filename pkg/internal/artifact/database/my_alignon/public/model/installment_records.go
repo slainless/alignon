@@ -14,6 +14,6 @@ import (
 
 type InstallmentRecords struct {
 	InstallmentID uuid.UUID `sql:"primary_key"`
-	ContractID    string
+	TransactionID uuid.UUID
 	PaidAt        time.Time
 }

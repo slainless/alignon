@@ -12,14 +12,15 @@ import (
 )
 
 type TransactionRecords struct {
-	ContractID  string `sql:"primary_key"`
+	ID          uuid.UUID `sql:"primary_key"`
+	ContractID  *string
 	LoanID      uuid.UUID
-	Otr         int64
-	AdminFee    int64
-	Installment int64
-	Interest    int64
+	Otr         *int64
+	AdminFee    *int64
+	Installment *int64
+	Interest    *int64
 	AssetName   string
-	Total       int64
+	Amount      int64
 	Status      int16
 	CatalogID   uuid.UUID
 }
