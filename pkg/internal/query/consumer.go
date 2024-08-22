@@ -44,7 +44,7 @@ func GetCurrentLoanOfConsumer(ctx context.Context, db *sql.DB, id uuid.UUID, to 
 		FROM(
 			table.Loans.
 				INNER_JOIN(table.TransactionRecords, table.TransactionRecords.LoanID.EQ(table.Loans.ID)).
-				INNER_JOIN(table.InstallmentRecords, table.InstallmentRecords.ContractID.EQ(table.TransactionRecords.ContractID)),
+				INNER_JOIN(table.InstallmentRecords, table.InstallmentRecords.TransactionID.EQ(table.TransactionRecords.ID)),
 		).
 		WHERE(
 			table.Loans.ConsumerID.EQ(UUID(id)).
@@ -68,7 +68,7 @@ func GetTransactionOfCurrentLoan(ctx context.Context, db *sql.DB, consumerID uui
 	).
 		FROM(
 			table.TransactionRecords.
-				INNER_JOIN(table.InstallmentRecords, table.InstallmentRecords.ContractID.EQ(table.TransactionRecords.ContractID)).
+				INNER_JOIN(table.InstallmentRecords, table.InstallmentRecords.TransactionID.EQ(table.TransactionRecords.ID)).
 				INNER_JOIN(
 					SELECT(table.Loans.ID).
 						FROM(table.Loans).
@@ -103,7 +103,7 @@ func GetLoansOfConsumer(ctx context.Context, db *sql.DB, id uuid.UUID, to any) e
 		FROM(
 			table.Loans.
 				INNER_JOIN(table.TransactionRecords, table.TransactionRecords.LoanID.EQ(table.Loans.ID)).
-				INNER_JOIN(table.InstallmentRecords, table.InstallmentRecords.ContractID.EQ(table.TransactionRecords.ContractID)),
+				INNER_JOIN(table.InstallmentRecords, table.InstallmentRecords.TransactionID.EQ(table.TransactionRecords.ID)),
 		).
 		WHERE(
 			table.Loans.ConsumerID.EQ(UUID(id)),
