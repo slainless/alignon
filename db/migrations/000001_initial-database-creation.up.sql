@@ -46,7 +46,7 @@ CREATE TABLE "loans" (
   "installment_length" smallint NOT NULL,
   "consumer_limit" bigint NOT NULL,
   "consumer_salary" bigint NOT NULL,
-  "loaned_at" timestamp NOT NULL,
+  "loaned_at" timestamp,
   "status" smallint NOT NULL DEFAULT 0
 );
 
