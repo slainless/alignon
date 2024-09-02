@@ -2,12 +2,34 @@
 
 > [!NOTE]
 > This project is nothing more than a showcase and is deprecated.
+> 
+> Also, lacking of OSS license is intentional.
 
 `Alignon = anagram("Loaning")`
 
-## ERD
+[Database diagram](https://dbdiagram.io/d/My-Alignon-Database-Schema-66c48707a346f9518c90ca7c)
 
-<iframe width="560" height="315" src='https://dbdiagram.io/e/66c48707a346f9518c90ca7c/66d5302deef7e08f0e616bbf'> </iframe>
+## Endpoints
+
+### Consumer
+
+- [x] Middleware: Authenticate user
+- [x] Apply loan
+- [x] Get loan history
+- [x] Get loan limit
+- [x] Get current loan detail
+- [x] Register user + file uploads
+
+### Admin
+
+- [ ] Middleware: Authenticate admin
+- [ ] Approve loan application
+- [ ] Reject loan application
+- [ ] Get consumer detail
+- [ ] Get consumers
+- [ ] Get loan detail
+- [ ] Get loans
+- [ ] Register loan payment
 
 ## Stack
 
